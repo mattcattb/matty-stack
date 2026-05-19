@@ -1,5 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Button, Card, CardContent } from "../components/ui";
+import {ExampleFeature} from "../features/example";
 import { useSession } from "../lib/auth";
 
 export const Route = createFileRoute("/")({
@@ -54,6 +55,7 @@ function HomePage() {
           </CardContent>
         </Card>
       </section>
+      <ExampleFeature />
     </div>
   );
 }

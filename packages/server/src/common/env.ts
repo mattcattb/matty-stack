@@ -1,5 +1,7 @@
 import {z} from "zod";
 
+const DEFAULT_REDIS_URL = "redis://localhost:6379";
+
 const betterAuthSchema = z.object({
   BETTER_AUTH_SECRET: z.string(),
   BETTER_AUTH_URL: z.string(),
@@ -21,6 +23,12 @@ const appEnvSchema = z.object({
   ...googleEnvSchema.shape,
   ...githubEnvSchema.shape,
   DATABASE_URL: z.string(),
+  REDIS_URL: z.preprocess((value) => {
+    if (typeof value === "string" && value.trim() !== "") {
+      return value;
+    }
+    return DEFAULT_REDIS_URL;
+  }, z.string().url()),
 
   LOG_LEVEL: z.string().optional(),
   CORS_ORIGINS: z.string().optional(),
