@@ -12,6 +12,14 @@ const toText = (message: WSMessageReceive) => {
   return "binary";
 };
 
+const parseJsonMessage = (message: string) => {
+  try {
+    return JSON.parse(message);
+  } catch {
+    return null;
+  }
+};
+
 export const wsController = createRouter().get(
   "/",
   upgradeWebSocket(() => ({
@@ -25,11 +33,17 @@ export const wsController = createRouter().get(
     },
     onMessage: (event, ws) => {
       const message = toText(event.data);
+      const json = parseJsonMessage(message);
+
+      if (json?.type === "ping") {
+        ws.send(JSON.stringify({type: "pong"}));
+        return;
+      }
 
       ws.send(
         JSON.stringify({
           type: "socket.echo",
-          payload: {message},
+          payload: {message, receivedAt: new Date().toISOString()},
         }),
       );
     },

@@ -23,7 +23,7 @@ docs/images/dashboard.png
 - Backend: Bun, Hono, Hono RPC, Zod validation
 - Database: PostgreSQL, Drizzle ORM
 - Auth: Better Auth with Drizzle adapter
-- Realtime/cache: Redis, Bun/Hono WebSockets
+- WebSockets/cache: Redis, Bun/Hono WebSockets
 - APIs: Typed Hono RPC client shared with the web app
 - Deployment: Not prescribed; designed to work with simple Bun-compatible hosts
 
@@ -33,7 +33,9 @@ docs/images/dashboard.png
 - Authenticated project example with typed Hono RPC calls from the web app.
 - Postgres schema and migrations through Drizzle.
 - Redis client, cache helpers, scheduler helper, and typed app event bus.
-- Basic `/ws` WebSocket endpoint as a starting point for realtime features.
+- Basic `/ws` WebSocket endpoint as a starting point for live features.
+- Centralized `src/hooks/useWebsocket.ts` hook with `react-use-websocket`, reconnect, and heartbeat defaults.
+- Small `src/hooks/useClipboard.ts` example for app-wide reusable UI behavior.
 - shadcn/Radix-style UI primitives with `components/common` and `features` examples.
 - Docker Compose for local Postgres and Redis.
 
@@ -49,11 +51,13 @@ This is a personal starter. I built the server structure, auth/database setup, R
 
 - React frontend uses TanStack Router for pages and TanStack Query for server state.
 - Web routes stay thin and compose feature modules from `src/features`.
+- App-wide reusable hooks live in `src/hooks`; feature-only hooks stay colocated with their feature.
+- Vite proxies same-origin `/api` and `/ws` requests to the Bun server in local development.
 - Hono server mounts auth, API routes, and WebSocket routes from `src/app.ts`.
 - `src/server.ts` handles runtime startup, Redis connection, and cleanup.
 - Hono RPC types are exported from the server and consumed by the web client.
 - Drizzle manages Postgres schema and migrations.
-- Redis is available for caching, realtime coordination, scheduled jobs, or temporary state.
+- Redis is available for caching, WebSocket coordination, scheduled jobs, or temporary state.
 
 ## Hard Parts
 
@@ -85,6 +89,28 @@ Default URLs:
 - Web: `http://localhost:5173`
 - Server: `http://localhost:3000`
 - WebSocket: `ws://localhost:3000/ws`
+
+By default the web app can call `/api` and `/ws` through the Vite dev proxy. Set `VITE_API_URL` or `VITE_WS_URL` only when the web app and server are deployed to different origins.
+
+## Clone Checklist
+
+When cloning this starter into a new app, change the project identity first:
+
+- package names in `package.json` and workspace package files
+- `COMPOSE_PROJECT_NAME`, `POSTGRES_DB`, `DATABASE_URL`, and `REDIS_URL`
+- published Docker ports if you run multiple cloned apps at once
+- `BETTER_AUTH_URL`, `CORS_ORIGINS`, `VITE_API_URL`, and `VITE_WS_URL` for split-origin deployments
+- README title, screenshots, hard parts, and feature list
+
+## Optional Areas To Keep Or Delete
+
+- `src/hooks/useWebsocket.ts`: keep when the app needs live updates, delete when basic RPC is enough.
+- `src/hooks/useClipboard.ts`: example shape for small reusable app hooks.
+- `src/features/projects/projects.query.ts`: colocated query example for feature-specific TanStack Query code.
+- `src/lib/cache.ts` and `src/lib/redis.ts`: keep for cache, rate limits, queues, presence, or temporary state.
+- `src/common/events.ts`: keep when multiple server modules need to react to the same domain event.
+- `src/common/scheduler.ts`: keep for simple in-process cron-style tasks; replace with a worker/queue when jobs need durability.
+- `components/common`: promote reusable feature components here only after they are used in more than one feature.
 ## Scripts
 
 - `bun run dev` - run server and web

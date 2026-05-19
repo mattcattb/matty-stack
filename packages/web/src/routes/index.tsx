@@ -1,6 +1,7 @@
 import {createFileRoute, Link} from "@tanstack/react-router";
-import {Button, Card, CardContent} from "../components/ui";
-import {ExampleFeature} from "../features/example";
+import {Button} from "../components/ui/button";
+import {Card, CardContent} from "../components/ui/card";
+import {ExampleFeature} from "../features/example/ExampleFeature";
 import {useSession} from "../lib/auth";
 
 export const Route = createFileRoute("/")({
@@ -51,7 +52,7 @@ function HomePage() {
               <li>Server: Bun + Hono</li>
               <li>Database: Postgres + Drizzle ORM</li>
               <li>Auth: Better Auth + Drizzle adapter</li>
-              <li>Cache/realtime: Redis + WebSocket starter</li>
+              <li>Cache/WebSockets: Redis + WebSocket starter</li>
               <li>Web: React + TanStack Router + Tailwind</li>
             </ul>
           </CardContent>

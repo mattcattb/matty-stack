@@ -1,5 +1,6 @@
-import {Button, Card, CardContent} from "../ui";
 import {cn} from "../../lib/cn";
+import {Button} from "../ui/button";
+import {Card, CardContent} from "../ui/card";
 
 type ResourceStateProps = {
   title: string;

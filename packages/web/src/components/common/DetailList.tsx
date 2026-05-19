@@ -1,4 +1,5 @@
-import {Badge, Card, CardContent} from "../ui";
+import {Badge} from "../ui/badge";
+import {Card, CardContent} from "../ui/card";
 
 type DetailItem = {
   label: string;

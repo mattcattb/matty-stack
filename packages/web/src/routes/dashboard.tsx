@@ -1,5 +1,5 @@
 import {createFileRoute, Navigate} from "@tanstack/react-router";
-import {ProjectsPanel} from "../features/projects";
+import {ProjectsPanel} from "../features/projects/ProjectsPanel";
 import {useSession} from "../lib/auth";
 export const Route = createFileRoute("/dashboard")({
   component: DashboardPage,
