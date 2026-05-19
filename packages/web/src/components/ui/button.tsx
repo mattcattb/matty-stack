@@ -4,8 +4,7 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "../../lib/cn";
 
 export const buttonStyles = cva(
-  [
-    "inline-flex items-center justify-center gap-2 rounded-xl font-semibold transition-all",
+  [    "inline-flex items-center justify-center gap-2 rounded-xl font-semibold transition-all",
     "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background",
     "disabled:pointer-events-none disabled:opacity-60",
   ],
@@ -48,7 +47,6 @@ export type ButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> &
   VariantProps<typeof buttonStyles> & {
     asChild?: boolean;
   };
-
 export function Button({
   className,
   variant,
@@ -61,8 +59,7 @@ export function Button({
   const Comp = asChild ? Slot : "button";
 
   return (
-    <Comp
-      type={type}
+    <Comp      type={type}
       className={cn(buttonStyles({ variant, size, effect }), className)}
       {...props}
     />

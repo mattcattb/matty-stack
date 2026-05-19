@@ -30,8 +30,7 @@ type TooltipProps = React.ComponentPropsWithoutRef<typeof TooltipRoot> & {
   content: React.ReactNode;
   children: React.ReactNode;
   align?: React.ComponentPropsWithoutRef<typeof TooltipContent>["align"];
-  side?: React.ComponentPropsWithoutRef<typeof TooltipContent>["side"];
-};
+  side?: React.ComponentPropsWithoutRef<typeof TooltipContent>["side"];};
 
 export function Tooltip({
   content,

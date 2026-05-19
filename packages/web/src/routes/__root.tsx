@@ -1,6 +1,6 @@
-import { createRootRoute, Link, Outlet } from "@tanstack/react-router";
-import { useSession, signOut } from "../lib/auth";
-import { Button } from "../components/ui";
+import {createRootRoute, Link, Outlet} from "@tanstack/react-router";
+import {Button} from "../components/ui";
+import {signOut, useSession} from "../lib/auth";
 
 export const Route = createRootRoute({
   component: RootLayout,

@@ -1,7 +1,6 @@
-import { createFileRoute, Navigate } from "@tanstack/react-router";
+import {createFileRoute, Navigate} from "@tanstack/react-router";
 import {ProjectsPanel} from "../features/projects";
-import { useSession } from "../lib/auth";
-
+import {useSession} from "../lib/auth";
 export const Route = createFileRoute("/dashboard")({
   component: DashboardPage,
 });
@@ -9,7 +8,6 @@ export const Route = createFileRoute("/dashboard")({
 function DashboardPage() {
   const { data: session, isPending } = useSession();
   const canFetch = Boolean(session && !isPending);
-
   if (!isPending && !session) {
     return <Navigate to="/login" replace />;
   }

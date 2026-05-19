@@ -19,7 +19,6 @@ const badgeStyles = cva(
     },
   },
 );
-
 export type BadgeProps = React.HTMLAttributes<HTMLSpanElement> &
   VariantProps<typeof badgeStyles>;
 

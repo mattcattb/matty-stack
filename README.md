@@ -85,7 +85,6 @@ Default URLs:
 - Web: `http://localhost:5173`
 - Server: `http://localhost:3000`
 - WebSocket: `ws://localhost:3000/ws`
-
 ## Scripts
 
 - `bun run dev` - run server and web
