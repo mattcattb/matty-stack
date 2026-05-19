@@ -111,12 +111,34 @@ When cloning this starter into a new app, change the project identity first:
 - `src/common/events.ts`: keep when multiple server modules need to react to the same domain event.
 - `src/common/scheduler.ts`: keep for simple in-process cron-style tasks; replace with a worker/queue when jobs need durability.
 - `components/common`: promote reusable feature components here only after they are used in more than one feature.
+
+## Testing
+
+Server feature tests use Bun's built-in test runner and real Postgres integration tests.
+
+The pattern is:
+
+- colocate tests beside the feature, for example `src/projects/projects.test.ts`
+- use `src/test/db.ts` for shared test setup
+- wipe tables before each test and after the suite
+- insert only the setup rows the feature needs
+
+Run them with:
+
+```bash
+bun run infra:up
+bun run db:migrate
+bun run test
+```
+
+This starter keeps tests intentionally direct. If a feature only needs service-level coverage, test the service against the database. If route behavior matters, add route-level tests around `app.request`.
 ## Scripts
 
 - `bun run dev` - run server and web
 - `bun run dev:server` - run server only
 - `bun run dev:web` - run web only
 - `bun run build` - build all packages
+- `bun run test` - run server integration tests
 - `bun run infra:up` - start Postgres and Redis
 - `bun run infra:down` - stop local infra
 - `bun run db:generate` - generate Drizzle migrations

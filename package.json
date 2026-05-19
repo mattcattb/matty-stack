@@ -7,6 +7,7 @@
     "dev:server": "bun --env-file=.env run --filter @matty-stack/server dev",
     "dev:web": "bun --env-file=.env run --filter @matty-stack/web dev",
     "build": "bun --env-file=.env run --filter '*' build",
+    "test": "bun --env-file=.env run --filter @matty-stack/server test",
     "db:generate": "bun --env-file=.env run --filter @matty-stack/server db:generate",
     "db:migrate": "bun --env-file=.env run --filter @matty-stack/server db:migrate",
     "db:studio": "bun --env-file=.env run --filter @matty-stack/server db:studio",
