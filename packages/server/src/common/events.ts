@@ -1,6 +1,6 @@
 import {EventEmitter} from "node:events";
 
-export interface AppEvents {
+interface AppEvents {
   "app:started": {port: number};
   "app:stopping": {reason: string};
 }

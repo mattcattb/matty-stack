@@ -2,9 +2,12 @@ import {betterAuth} from "better-auth";
 import {drizzleAdapter} from "better-auth/adapters/drizzle";
 import {db} from "../db";
 import * as schema from "../db/schema";
-import {appEnv} from "../common/env";
+import {appEnv, appOrigins} from "../common/env";
 
 export const auth = betterAuth({
+  baseURL: appEnv.BETTER_AUTH_URL,
+  secret: appEnv.BETTER_AUTH_SECRET,
+  trustedOrigins: appOrigins,
   database: drizzleAdapter(db, {
     provider: "pg",
     schema: {
@@ -33,5 +36,3 @@ export const auth = betterAuth({
       : {}),
   },
 });
-
-export type Auth = typeof auth;

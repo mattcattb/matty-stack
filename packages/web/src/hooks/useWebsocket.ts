@@ -8,7 +8,7 @@ const statusByReadyState = {
   [ReadyState.UNINSTANTIATED]: "Idle",
 } as const;
 
-export const resolveWebSocketOrigin = () => {
+const resolveWebSocketOrigin = () => {
   const envUrl = import.meta.env.VITE_WS_URL?.trim();
   if (envUrl) {
     return envUrl;
@@ -22,7 +22,7 @@ export const resolveWebSocketOrigin = () => {
   return `${protocol}//${window.location.host}`;
 };
 
-export const createWebSocketUrl = (path = "/ws") =>
+const createWebSocketUrl = (path = "/ws") =>
   new URL(path, resolveWebSocketOrigin()).toString();
 
 export function useWebsocket(enabled = true) {

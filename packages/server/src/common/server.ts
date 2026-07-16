@@ -1,11 +1,16 @@
 import {appEvents} from "./events";
 import {logger} from "./logger";
-import type {IntervalTask} from "./scheduler";
 
 type RuntimeConnection = {
   name: string;
   connect: () => Promise<void> | void;
   disconnect?: () => Promise<void> | void;
+};
+
+type IntervalTask = {
+  name: string;
+  start: () => void;
+  stop: () => void;
 };
 
 type ServerRuntimeOptions = {

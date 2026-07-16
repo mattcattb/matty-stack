@@ -1,25 +1,30 @@
 import {useMutation, useQuery, useQueryClient} from "@tanstack/react-query";
+import {parseResponse, type InferResponseType} from "hono/client";
 import {type FormEvent, useState} from "react";
 import {ResourceState} from "../../components/common/ResourceState";
 import {Button} from "../../components/ui/button";
 import {Card, CardContent} from "../../components/ui/card";
 import {Input} from "../../components/ui/input";
 import {Label} from "../../components/ui/label";
-import {
-  createProject,
-  type Project,
-  projectsQueryKey,
-  projectsQueryOptions,
-} from "./projects.query";
+import {rpcClient} from "../../lib/rpc.client";
+
+const projectsApi = rpcClient.projects;
+const projectsQueryKey = ["projects"] as const;
+type Project = InferResponseType<typeof projectsApi.$get>[number];
 
 export function ProjectsPanel({enabled}: {enabled: boolean}) {
   const [name, setName] = useState("");
   const queryClient = useQueryClient();
 
-  const projectsQuery = useQuery(projectsQueryOptions(enabled));
+  const projectsQuery = useQuery({
+    queryKey: projectsQueryKey,
+    queryFn: () => parseResponse(projectsApi.$get()),
+    enabled,
+  });
 
   const createMutation = useMutation({
-    mutationFn: createProject,
+    mutationFn: (payload: {name: string}) =>
+      parseResponse(projectsApi.$post({json: payload})),
     onSuccess: async (created) => {
       queryClient.setQueryData<Project[]>(projectsQueryKey, (prev) => [
         created,

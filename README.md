@@ -32,7 +32,7 @@ docs/images/dashboard.png
 - Better Auth email sign up, sign in, sign out, and session handling.
 - Authenticated project example with typed Hono RPC calls from the web app.
 - Postgres schema and migrations through Drizzle.
-- Redis client, cache helpers, scheduler helper, and typed app event bus.
+- Redis client and small connection, shutdown, and event lifecycle helpers.
 - Basic `/ws` WebSocket endpoint as a starting point for live features.
 - Centralized `src/hooks/useWebsocket.ts` hook with `react-use-websocket`, reconnect, and heartbeat defaults.
 - Small `src/hooks/useClipboard.ts` example for app-wide reusable UI behavior.
@@ -52,7 +52,7 @@ This is a personal starter. I built the server structure, auth/database setup, R
 - React frontend uses TanStack Router for pages and TanStack Query for server state.
 - Web routes stay thin and compose feature modules from `src/features`.
 - App-wide reusable hooks live in `src/hooks`; feature-only hooks stay colocated with their feature.
-- Vite proxies same-origin `/api` and `/ws` requests to the Bun server in local development.
+- Vite proxies same-origin `/api` and `/ws` requests to configurable upstreams in development and deployed previews.
 - Hono server mounts auth, API routes, and WebSocket routes from `src/app.ts`.
 - `src/server.ts` handles runtime startup, Redis connection, and cleanup.
 - Hono RPC types are exported from the server and consumed by the web client.
@@ -90,7 +90,16 @@ Default URLs:
 - Server: `http://localhost:3000`
 - WebSocket: `ws://localhost:3000/ws`
 
-By default the web app can call `/api` and `/ws` through the Vite dev proxy. Set `VITE_API_URL` or `VITE_WS_URL` only when the web app and server are deployed to different origins.
+By default the web app calls relative `/api` and `/ws` URLs through the Vite proxy. This keeps cookies first-party and removes browser-facing CORS configuration from the normal path.
+
+For a deployed preview with private upstream services, keep `VITE_API_URL` and `VITE_WS_URL` empty and set server-only proxy targets:
+
+```env
+API_PROXY_TARGET=http://api.internal:3000
+WS_PROXY_TARGET=http://ws.internal:4001
+```
+
+Set `VITE_API_URL` or `VITE_WS_URL` only when the browser genuinely needs to call another public origin.
 
 ## Clone Checklist
 
@@ -99,17 +108,19 @@ When cloning this starter into a new app, change the project identity first:
 - package names in `package.json` and workspace package files
 - `COMPOSE_PROJECT_NAME`, `POSTGRES_DB`, `DATABASE_URL`, and `REDIS_URL`
 - published Docker ports if you run multiple cloned apps at once
-- `BETTER_AUTH_URL`, `CORS_ORIGINS`, `VITE_API_URL`, and `VITE_WS_URL` for split-origin deployments
+- `BETTER_AUTH_URL` to the public web origin
+- `API_PROXY_TARGET` and `WS_PROXY_TARGET` when the deployed web service proxies to private upstreams
+- `CORS_ORIGINS`, `VITE_API_URL`, and `VITE_WS_URL` only for split-origin deployments
 - README title, screenshots, hard parts, and feature list
 
 ## Optional Areas To Keep Or Delete
 
 - `src/hooks/useWebsocket.ts`: keep when the app needs live updates, delete when basic RPC is enough.
 - `src/hooks/useClipboard.ts`: example shape for small reusable app hooks.
-- `src/features/projects/projects.query.ts`: colocated query example for feature-specific TanStack Query code.
-- `src/lib/cache.ts` and `src/lib/redis.ts`: keep for cache, rate limits, queues, presence, or temporary state.
-- `src/common/events.ts`: keep when multiple server modules need to react to the same domain event.
-- `src/common/scheduler.ts`: keep for simple in-process cron-style tasks; replace with a worker/queue when jobs need durability.
+- `src/features/projects/ProjectsPanel.tsx`: route-local query and mutation example using inferred Hono RPC types.
+- `src/lib/redis.ts`: keep for cache, rate limits, queues, presence, or temporary state.
+- `src/common/events.ts`: keep when multiple server modules need to react to runtime events.
+- `src/common/server.ts`: can start and stop simple in-process interval tasks; use a worker/queue when jobs need durability.
 - `components/common`: promote reusable feature components here only after they are used in more than one feature.
 
 ## Testing
@@ -138,6 +149,7 @@ This starter keeps tests intentionally direct. If a feature only needs service-l
 - `bun run dev:server` - run server only
 - `bun run dev:web` - run web only
 - `bun run build` - build all packages
+- `bun run typecheck` - typecheck all packages
 - `bun run test` - run server integration tests
 - `bun run infra:up` - start Postgres and Redis
 - `bun run infra:down` - stop local infra

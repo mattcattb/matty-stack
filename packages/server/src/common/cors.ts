@@ -1,11 +1,6 @@
 import { cors } from "hono/cors";
 
-import {appEnv} from "./env";
-
-const allowedOrigins = (appEnv.CORS_ORIGINS || appEnv.BETTER_AUTH_URL)
-  .split(",")
-  .map((origin) => origin.trim())
-  .filter(Boolean);
+import {appEnv, appOrigins} from "./env";
 
 const isLocalhostOrigin = (origin: string) => {
   try {
@@ -22,14 +17,14 @@ export const corsMiddleware = cors({
       return null;
     }
 
-    return allowedOrigins.length === 0 ||
-      allowedOrigins.includes(origin) ||
+    return appOrigins.includes(origin) ||
       (appEnv.NODE_ENV !== "production" && isLocalhostOrigin(origin))
       ? origin
       : null;
   },
   credentials: true,
-  allowMethods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS", "HEAD"],  allowHeaders: ["Content-Type", "Authorization"],
+  allowMethods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS", "HEAD"],
+  allowHeaders: ["Content-Type", "Authorization"],
   exposeHeaders: ["Content-Length"],
   maxAge: 86400, // 24 hours
 });

@@ -38,7 +38,3 @@ export function getPinoLogger() {
 }
 
 export const logger = pinoInstance;
-
-export function createChildLogger(bindings: pino.Bindings) {
-  return logger.child(bindings);
-}

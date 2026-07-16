@@ -3,8 +3,8 @@ import {z} from "zod";
 const DEFAULT_REDIS_URL = "redis://localhost:6379";
 
 const betterAuthSchema = z.object({
-  BETTER_AUTH_SECRET: z.string(),
-  BETTER_AUTH_URL: z.string(),
+  BETTER_AUTH_SECRET: z.string().min(32),
+  BETTER_AUTH_URL: z.string().url(),
 });
 
 const googleEnvSchema = z.object({
@@ -33,7 +33,7 @@ const appEnvSchema = z.object({
   LOG_LEVEL: z.string().optional(),
   CORS_ORIGINS: z.string().optional(),
 
-  NODE_ENV: z.string().optional(),
+  NODE_ENV: z.enum(["development", "test", "production"]).default("development"),
 
   PORT: z.preprocess((value) => {
     if (typeof value === "string" && value.trim() !== "") {
@@ -43,3 +43,10 @@ const appEnvSchema = z.object({
   }, z.number().int().positive().default(3000)),
 });
 export const appEnv = appEnvSchema.parse(process.env);
+
+export const appOrigins = [
+  appEnv.BETTER_AUTH_URL,
+  ...(appEnv.CORS_ORIGINS || "").split(","),
+]
+  .map((origin) => origin.trim())
+  .filter(Boolean);

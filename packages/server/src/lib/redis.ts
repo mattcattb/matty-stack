@@ -2,7 +2,7 @@ import {createClient} from "redis";
 import {appEnv} from "../common/env";
 import {logger} from "../common/logger";
 
-export const redis = createClient({
+const redis = createClient({
   url: appEnv.REDIS_URL,
 });
 
